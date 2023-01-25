@@ -800,7 +800,7 @@ class Twitter(object):
             elif os.path.splitext(filepath)[1] == ".zip":
                 # Zipped tweet archive
                 with ZipFile(filepath) as zipfile:
-                    with zipfile.open("data/tweet.js") as f:
+                    with zipfile.open("data/tweets.js") as f:
                         f = io.TextIOWrapper(f, "UTF-8")
                         # Skip the JS variable assignment at the start of this file
                         f.read(25)
