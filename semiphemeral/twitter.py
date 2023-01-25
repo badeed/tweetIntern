@@ -760,12 +760,22 @@ class Twitter(object):
         dm_ids = []
         for obj in conversations:
             for message in obj["dmConversation"]["messages"]:
-                created_str = message["messageCreate"]["createdAt"]
+                # If it's a message
+                if "messageCreate" in message:
+                    created_str = message["messageCreate"]["createdAt"]
+                # Else if it's a welcome message
+                elif "welcomeMessageCreate" in message:
+                    created_str = message["welcomeMessageCreate"]["createdAt"]
                 created_timestamp = datetime.datetime.strptime(
                     created_str, "%Y-%m-%dT%H:%M:%S.%fZ"
                 )
                 if created_timestamp <= datetime_threshold:
-                    dm_id = int(message["messageCreate"]["id"])
+                    # If it's a message
+                    if "messageCreate" in message:
+                        dm_id = int(message["messageCreate"]["id"])
+                    # Else if it's a welcome message
+                    elif "welcomeMessageCreate" in message:
+                        dm_id = int(message["welcomeMessageCreate"]["id"])
                     dm_ids.append(dm_id)
 
                     # Try deleting
