@@ -528,13 +528,14 @@ class Twitter(object):
         if not self.authenticated:
             return
 
-        # Get permission because the following is very noisy
-        click.secho(
-            "WARNING: One does not simply unlike old tweets. According to the Twitter API, you didn't like these old tweets, so you can't unlike them -- even though they're listed in your like history. The only way to remove them from your like history is to LIKE THEM AGAIN, and then you can unlike them. This is very noisy. Every time you re-like a tweet, the user will get a notification.",
-            fg="red",
-        )
-        if not click.confirm("Do you want to continue?"):
-            return
+        # # Get permission because the following is very noisy
+        # # Disable to use in production without user interaction
+        # click.secho(
+        #     "WARNING: One does not simply unlike old tweets. According to the Twitter API, you didn't like these old tweets, so you can't unlike them -- even though they're listed in your like history. The only way to remove them from your like history is to LIKE THEM AGAIN, and then you can unlike them. This is very noisy. Every time you re-like a tweet, the user will get a notification.",
+        #     fg="red",
+        # )
+        # if not click.confirm("Do you want to continue?"):
+        #     return
 
         # Make a list of liked tweet status_ids
         click.secho(
