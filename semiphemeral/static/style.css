@@ -82,7 +82,8 @@ body {
   width: 500px;
 }
 
-.settings form label.checkbox, .settings fieldset label {
+.settings form label.checkbox,
+.settings fieldset label {
   display: inline;
   width: auto;
   text-align: left;

@@ -30,6 +30,6 @@ setuptools.setup(
         "Intended Audience :: End Users/Desktop",
         "License :: OSI Approved :: MIT License",
     ),
-    entry_points={"console_scripts": ["semiphemeral = semiphemeral:main",],},
+    entry_points={"console_scripts": ["semiphemeral = semiphemeral:main", ], },
     install_requires=["click", "colorama", "tweepy", "flask", "sqlalchemy"],
 )

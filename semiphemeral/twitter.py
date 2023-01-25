@@ -37,7 +37,7 @@ class Twitter(object):
             self.common.settings.get("access_token_key"),
             self.common.settings.get("access_token_secret"),
         )
-        proxy=self.common.settings.get('proxy')
+        proxy = self.common.settings.get('proxy')
         if proxy == "" or proxy == "None":
             proxy = None
         self.api = tweepy.API(
@@ -69,7 +69,6 @@ class Twitter(object):
                 "Want to delete {} tweets".format(len(tweets_to_delete)),
                 fg="cyan",
             )
-
 
     def fetch(self):
         if not self.authenticated:
@@ -500,7 +499,7 @@ class Twitter(object):
             if not js_string.startswith(expected_start):
                 click.echo("File expected to start with: `window.YTD.like.part0 = `")
                 return
-            json_string = js_string[len(expected_start) :]
+            json_string = js_string[len(expected_start):]
             try:
                 likes = json.loads(json_string)
             except:
@@ -724,7 +723,7 @@ class Twitter(object):
             if not js_string.startswith(expected_start):
                 click.echo("File expected to start with: `window.YTD.direct_message`")
                 return
-            json_string = js_string[js_string.find("[") :]
+            json_string = js_string[js_string.find("["):]
             try:
                 conversations = json.loads(json_string)
             except:
