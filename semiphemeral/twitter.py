@@ -37,7 +37,7 @@ class Twitter(object):
             self.common.settings.get("access_token_key"),
             self.common.settings.get("access_token_secret"),
         )
-        proxy=self.common.settings.get('proxy')
+        proxy = self.common.settings.get('proxy')
         if proxy == "" or proxy == "None":
             proxy = None
         self.api = tweepy.API(
@@ -69,7 +69,6 @@ class Twitter(object):
                 "Want to delete {} tweets".format(len(tweets_to_delete)),
                 fg="cyan",
             )
-
 
     def fetch(self):
         if not self.authenticated:
@@ -494,13 +493,13 @@ class Twitter(object):
             return
 
         # Validate file format
-        with open(filename) as f:
+        with open(filename, encoding="UTF-8") as f:
             expected_start = "window.YTD.like.part0 = "
             js_string = f.read()
             if not js_string.startswith(expected_start):
                 click.echo("File expected to start with: `window.YTD.like.part0 = `")
                 return
-            json_string = js_string[len(expected_start) :]
+            json_string = js_string[len(expected_start):]
             try:
                 likes = json.loads(json_string)
             except:
@@ -529,13 +528,14 @@ class Twitter(object):
         if not self.authenticated:
             return
 
-        # Get permission because the following is very noisy
-        click.secho(
-            "WARNING: One does not simply unlike old tweets. According to the Twitter API, you didn't like these old tweets, so you can't unlike them -- even though they're listed in your like history. The only way to remove them from your like history is to LIKE THEM AGAIN, and then you can unlike them. This is very noisy. Every time you re-like a tweet, the user will get a notification.",
-            fg="red",
-        )
-        if not click.confirm("Do you want to continue?"):
-            return
+        # # Get permission because the following is very noisy
+        # # Disable to use in production without user interaction
+        # click.secho(
+        #     "WARNING: One does not simply unlike old tweets. According to the Twitter API, you didn't like these old tweets, so you can't unlike them -- even though they're listed in your like history. The only way to remove them from your like history is to LIKE THEM AGAIN, and then you can unlike them. This is very noisy. Every time you re-like a tweet, the user will get a notification.",
+        #     fg="red",
+        # )
+        # if not click.confirm("Do you want to continue?"):
+        #     return
 
         # Make a list of liked tweet status_ids
         click.secho(
@@ -718,13 +718,13 @@ class Twitter(object):
             return
 
         # Validate file format
-        with open(filename) as f:
+        with open(filename, encoding="UTF-8") as f:
             expected_start = "window.YTD.direct_message"
             js_string = f.read()
             if not js_string.startswith(expected_start):
                 click.echo("File expected to start with: `window.YTD.direct_message`")
                 return
-            json_string = js_string[js_string.find("[") :]
+            json_string = js_string[js_string.find("["):]
             try:
                 conversations = json.loads(json_string)
             except:
@@ -761,12 +761,22 @@ class Twitter(object):
         dm_ids = []
         for obj in conversations:
             for message in obj["dmConversation"]["messages"]:
-                created_str = message["messageCreate"]["createdAt"]
+                # If it's a message
+                if "messageCreate" in message:
+                    created_str = message["messageCreate"]["createdAt"]
+                # Else if it's a welcome message
+                elif "welcomeMessageCreate" in message:
+                    created_str = message["welcomeMessageCreate"]["createdAt"]
                 created_timestamp = datetime.datetime.strptime(
                     created_str, "%Y-%m-%dT%H:%M:%S.%fZ"
                 )
                 if created_timestamp <= datetime_threshold:
-                    dm_id = int(message["messageCreate"]["id"])
+                    # If it's a message
+                    if "messageCreate" in message:
+                        dm_id = int(message["messageCreate"]["id"])
+                    # Else if it's a welcome message
+                    elif "welcomeMessageCreate" in message:
+                        dm_id = int(message["welcomeMessageCreate"]["id"])
                     dm_ids.append(dm_id)
 
                     # Try deleting
@@ -801,7 +811,7 @@ class Twitter(object):
             elif os.path.splitext(filepath)[1] == ".zip":
                 # Zipped tweet archive
                 with ZipFile(filepath) as zipfile:
-                    with zipfile.open("data/tweet.js") as f:
+                    with zipfile.open("data/tweets.js") as f:
                         f = io.TextIOWrapper(f, "UTF-8")
                         # Skip the JS variable assignment at the start of this file
                         f.read(25)
