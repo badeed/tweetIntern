@@ -684,7 +684,7 @@ class Twitter(object):
                             )
                             click.echo(
                                 "Current time: {}".format(
-                                    time.strftime("%b %d, %Y %l:%M%p %Z")
+                                    time.strftime("%b %d, %Y %I:%M%p %Z")
                                 )
                             )
                             click.secho("Waiting 24 hours...", bold=True)
